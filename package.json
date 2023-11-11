@@ -1,0 +1,10 @@
+{
+  "name": "node-i18n",
+  "version": "0.0.1",
+  "description": "Effortlessly internationalize your app with our npm i18n package. Easily manage translations for diverse audiences, ensuring a user-friendly, global experience.",
+  "main": "build/index.js",
+  "repository": "https://github.com/Drawilet/node-i18n.git",
+  "author": "Drawilet <drawiletdev@gmail.com>",
+  "license": "MIT",
+  "private": false
+}
