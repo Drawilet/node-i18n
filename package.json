@@ -1,9 +1,12 @@
 {
-  "name": "node-i18n",
+  "name": "@drawilet/i18n",
   "version": "0.0.1",
   "description": "Effortlessly internationalize your app with our npm i18n package. Easily manage translations for diverse audiences, ensuring a user-friendly, global experience.",
   "main": "build/index.js",
-  "repository": "https://github.com/Drawilet/node-i18n.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Drawilet/node-i18n.git"
+  },
   "author": "Drawilet <drawiletdev@gmail.com>",
   "license": "MIT",
   "private": false,
@@ -23,5 +26,15 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/Drawilet/node-i18n/issues"
+  },
+  "homepage": "https://github.com/Drawilet/node-i18n#readme",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "i18n"
+  ]
 }
