@@ -18,7 +18,7 @@ npm install node-i18n
 To use the package, you need to initialize the `I18n` class. Here's an example of how you might set it up:
 
 ```javascript
-import I18n from "node-i18n";
+import I18n from "@drawilet/i18n";
 
 // Initialize the i18n instance
 const i18n = new I18n(strategy, {
