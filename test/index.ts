@@ -1,7 +1,7 @@
 import I18n from "../src/";
 import GoogleStrategy from "../src/strategies/Google";
 
-const i18n = new I18n(new GoogleStrategy(), {
+const i18n = new I18n(new GoogleStrategy("http://212.107.31.118:80"), {
   locales: ["es", "en"],
   defaultLocale: "en",
   dir: __dirname + "/i18n",
