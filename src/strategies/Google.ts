@@ -2,18 +2,28 @@ import { Locale } from "types/Locale";
 import { Strategy } from "types/Strategy";
 
 import { translate } from "@vitalets/google-translate-api";
+import { HttpProxyAgent } from "http-proxy-agent";
 
 class GoogleStrategy implements Strategy {
   public id = "google-translate";
+  public fetchOptions;
 
-  constructor(id?: string) {
-    if (id) this.id = id;
+  constructor(agent?: string) {
+    if (agent) this.fetchOptions = { agent: new HttpProxyAgent(agent) };
   }
 
-  async get(text: string, { from, to }: { from: Locale; to: Locale }) {
-    const res = await translate(text, { from, to });
+  async get(
+    text: string,
+    { from, to, context }: { from: Locale; to: Locale; context?: string }
+  ) {
+    const res = await translate(`[(${context})] ${text}`, {
+      from,
+      to,
+      fetchOptions: this.fetchOptions,
+    });
+    const cleanedText = res.text.replace(/\[\((.*?)\)\]/g, "").slice(1);
 
-    return res.text;
+    return cleanedText;
   }
 }
 

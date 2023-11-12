@@ -15,7 +15,8 @@
     "test": "ts-node test/index.ts"
   },
   "dependencies": {
-    "@vitalets/google-translate-api": "^9.2.0"
+    "@vitalets/google-translate-api": "^9.2.0",
+    "http-proxy-agent": "^7.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.9.0",
