@@ -1,0 +1,20 @@
+{
+    "/": {
+        "title": {
+            "es": "¡Hola Mundo!",
+            "en": "Hello World!"
+        }
+    },
+    "/customers/": {
+        "title": {
+            "es": "Clientes",
+            "en": "Customers"
+        }
+    },
+    "/customers/save": {
+        "title": {
+            "es": "Salvar clientes",
+            "en": "Save customers"
+        }
+    }
+}

@@ -8,15 +8,20 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "node .",
-    "build": "tsc",
-    "dev": "ts-node src/index.ts"
+    "build": "rimraf build && tsc",
+    "test": "ts-node test/index.ts"
+  },
+  "dependencies": {
+    "@vitalets/google-translate-api": "^9.2.0"
   },
   "devDependencies": {
+    "@types/node": "^20.9.0",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "eslint": "^8.53.0",
-    "typescript": "^5.2.2",
-    "ts-node": "^10.9.1"
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.2.2"
   }
 }
