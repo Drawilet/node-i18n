@@ -8,7 +8,7 @@ Effortlessly internationalize your app with our npm i18n package. Easily manage 
 You can install the package via npm:
 
 ```bash
-npm install node-i18n
+npm install @drawilet/i18n
 ```
 
 ## Usage
