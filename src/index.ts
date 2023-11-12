@@ -49,14 +49,17 @@ class I18n {
 
   public async translate(
     text: string,
-    { from, to }: { from: Locale; to: Locale }
+    { from, to, context }: { from: Locale; to: Locale; context?: string }
   ) {
-    this.cache[this.strategy.id][to] ??= {};
-    if (this.cache[this.strategy.id][to][text])
-      return this.cache[this.strategy.id][to][text];
+    const key = `${text}#${context ?? ""}`;
 
-    const res = await this.strategy.get(text, { from, to });
-    this.cache[this.strategy.id][to][text] = res;
+    this.cache[this.strategy.id][to] ??= {};
+    if (this.cache[this.strategy.id][to][key])
+      return this.cache[this.strategy.id][to][key];
+
+    const res = await this.strategy.get(text, { from, to, context });
+
+    this.cache[this.strategy.id][to][key] = res;
     return res;
   }
 
@@ -90,12 +93,15 @@ class I18n {
       this.data[name] ??= {};
 
       for (const key in fileData) {
+        if (key == "_context") continue;
+
         this.data[name][key] ??= {};
         for (const locale of this.config.locales) {
           const text = fileData[key];
           const res = await this.translate(text, {
             from: this.config.defaultLocale,
             to: locale,
+            context: fileData._context,
           });
           this.data[name][key][locale] = res;
         }
