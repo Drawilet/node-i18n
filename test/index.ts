@@ -1,5 +1,5 @@
-import I18n from "@/index";
-import GoogleStrategy from "@/strategies/Google";
+import I18n from "../src/";
+import GoogleStrategy from "../src/strategies/Google";
 
 const i18n = new I18n(new GoogleStrategy(), {
   locales: ["es", "en"],
@@ -9,6 +9,7 @@ const i18n = new I18n(new GoogleStrategy(), {
 });
 
 (async () => {
+  await i18n.generate();
   await i18n.load();
 
   const client = i18n.createClient("es", "/customers/");
