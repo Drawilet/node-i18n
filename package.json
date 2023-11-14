@@ -1,6 +1,6 @@
 {
   "name": "@drawilet/i18n",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "description": "Effortlessly internationalize your app with our npm i18n package. Easily manage translations for diverse audiences, ensuring a user-friendly, global experience.",
   "main": "build/index.js",
   "repository": {
@@ -12,7 +12,8 @@
   "private": false,
   "scripts": {
     "build": "rimraf build && tsc",
-    "test": "ts-node test/index.ts"
+    "test": "ts-node test/index.ts",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@vitalets/google-translate-api": "^9.2.0",
