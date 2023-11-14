@@ -16,6 +16,9 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
     "typeRoots": ["./node_modules/@types"],
     "paths": {
       "@/*": ["./src/*"],
