@@ -24,8 +24,9 @@ import I18n from "@drawilet/i18n";
 const i18n = new I18n(strategy, {
   locales: [/* Array of supported locales */],
   defaultLocale: /* Default locale */,
-  dir: /* Path to i18n files (auto-generated)*/,
   files: /* Path to files (routes, pages, views) */,
+  cache_path: /* Path to cache*/,
+  data_path: /* Path to data (auto-generated)*/
 });
 ```
 
@@ -63,11 +64,11 @@ Creates a client to access translations based on a locale and pathname.
 const i18n = new I18n(new GoogleStrategy("http://212.107.31.118:80"), {
   locales: ["es", "en"],
   defaultLocale: "en",
-  dir: __dirname + "/i18n",
   files: __dirname + "/routes",
 });
 
 (async () => {
+  await i18n.generate();
   await i18n.load();
 
   const client = i18n.createClient("es", "/customers/");

@@ -18,33 +18,46 @@ class I18n {
     config: {
       locales: Locale[];
       defaultLocale: Locale;
-      dir: string;
       files: string;
+      cache_path?: string;
+      data_path?: string;
     }
   ) {
-    const cachePath = path.join(config.dir, "cache.json");
-    const dataPath = path.join(config.dir, "data.json");
+    config.cache_path ??= path.resolve("cache/i18n.json");
+    config.data_path ??= path.resolve(
+      `src/i18n/${path.basename(config.files)}.json`
+    );
 
-    validatePath(path.join(config.dir));
-    validatePath(cachePath, JSON.stringify({}));
-    validatePath(dataPath, JSON.stringify({}));
+    if (!config.cache_path.endsWith(".json"))
+      throw new Error("cache_path must be a json file");
+    if (!config.data_path.endsWith(".json"))
+      throw new Error("data_path must be a json file");
 
-    this.cache = require(cachePath);
-    this.data = require(dataPath);
+    config.data_path = path.join(config.data_path);
+    config.cache_path = path.join(config.cache_path);
+    config.files = path.join(config.files);
+
+    validatePath(config.cache_path, JSON.stringify({}));
+    validatePath(config.data_path, JSON.stringify({}));
+
+    this.cache = require(config.cache_path);
+    this.data = require(config.data_path);
 
     this.cache[strategy.id] ??= {};
 
     this.strategy = strategy;
-    this.config = config;
+    this.config = config as {
+      locales: Locale[];
+      defaultLocale: Locale;
+      files: string;
+      cache_path: string;
+      data_path: string;
+    };
   }
   private saveCache() {
-    writeFile(
-      path.join(this.config.dir, "cache.json"),
-      JSON.stringify(this.cache),
-      (err) => {
-        if (err) throw err;
-      }
-    );
+    writeFile(this.config.cache_path, JSON.stringify(this.cache), (err) => {
+      if (err) throw err;
+    });
   }
 
   public async translate(
@@ -116,15 +129,12 @@ class I18n {
 
     await this.generateByDirectory(this.config.files);
 
-    writeFileSync(
-      path.join(this.config.dir, "data.json"),
-      JSON.stringify(this.data)
-    );
+    writeFileSync(this.config.data_path, JSON.stringify(this.data));
     this.saveCache();
   }
 
   public async load() {
-    this.data = require(path.join(this.config.dir, "data.json"));
+    this.data = require(this.config.data_path);
   }
 
   public get(locale: Locale, pathname: string, key: string) {
