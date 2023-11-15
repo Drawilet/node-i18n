@@ -3,7 +3,7 @@ import { Locale } from "types/Locale";
 import I18nBase from "./base";
 
 class I18nClient extends I18nBase {
-  public async load() {
+  public load() {
     this.data = require(this.config.data_path);
   }
 
