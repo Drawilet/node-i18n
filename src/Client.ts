@@ -3,15 +3,6 @@ import { Locale } from "types/Locale";
 import I18nBase from "./base";
 
 class I18nClient extends I18nBase {
-  private getRelativeName(dir: string) {
-    let name = dir.slice(this.config.files.length);
-    name = name.replace(/\\/g, "/");
-    name = name.replace(/index/g, "");
-    name = name.split(".")[0];
-
-    return name;
-  }
-
   public async load() {
     this.data = require(this.config.data_path);
   }
