@@ -1,0 +1,92 @@
+import { readdirSync, statSync, writeFile, writeFileSync } from "fs";
+
+import path from "path";
+import { Locale } from "types/Locale";
+import I18nBase from "./base";
+
+class I18nGenerator extends I18nBase {
+  constructor() {
+    super(true);
+  }
+
+  private saveCache() {
+    writeFile(this.config.cache_path, JSON.stringify(this.cache), (err) => {
+      if (err) throw err;
+    });
+  }
+
+  public async translate(
+    text: string,
+    { from, to, context }: { from: Locale; to: Locale; context?: string }
+  ) {
+    const key = `${text}#${context ?? ""}`;
+
+    this.cache[this.config.strategy.id][to] ??= {};
+    if (this.cache[this.config.strategy.id][to][key])
+      return this.cache[this.config.strategy.id][to][key];
+
+    const res = await this.config.strategy.get(text, { from, to, context });
+
+    this.cache[this.config.strategy.id][to][key] = res;
+    return res;
+  }
+
+  private getRelativeName(dir: string) {
+    let name = dir.slice(this.config.files.length);
+    name = name.replace(/\\/g, "/");
+    name = name.replace(/index/g, "");
+    name = name.split(".")[0];
+
+    return name;
+  }
+
+  private async generateByDirectory(dir: string) {
+    const files: string[] = [];
+    const dirs: string[] = [];
+
+    readdirSync(dir).forEach((item) => {
+      const itemPath = path.join(dir, item);
+      if (statSync(itemPath).isDirectory()) dirs.push(itemPath);
+      else files.push(itemPath);
+    });
+
+    for (const filePath of files) {
+      const file = require(filePath);
+
+      let fileData;
+      if (filePath.endsWith(".json")) fileData = file;
+      else fileData = file.i18nData;
+
+      const name = this.getRelativeName(filePath);
+      this.data[name] ??= {};
+
+      for (const key in fileData) {
+        if (key == "_context") continue;
+
+        this.data[name][key] ??= {};
+        for (const locale of this.config.locales) {
+          const text = fileData[key];
+          const res = await this.translate(text, {
+            from: this.config.defaultLocale,
+            to: locale,
+            context: fileData._context,
+          });
+          this.data[name][key][locale] = res;
+        }
+      }
+    }
+
+    for (const dirname of dirs) await this.generateByDirectory(dirname);
+  }
+
+  public async generate() {
+    this.data = {};
+
+    await this.generateByDirectory(this.config.files);
+
+    writeFileSync(this.config.data_path, JSON.stringify(this.data));
+    this.saveCache();
+  }
+}
+
+export default I18nGenerator;
