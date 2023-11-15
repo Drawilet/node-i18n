@@ -1,8 +1,11 @@
 {
   "name": "@drawilet/i18n",
-  "version": "0.0.8",
+  "version": "0.0.11",
   "description": "Effortlessly internationalize your app with our npm i18n package. Easily manage translations for diverse audiences, ensuring a user-friendly, global experience.",
   "main": "build/index.js",
+  "bin": {
+    "i18n": "bin/generate.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Drawilet/node-i18n.git"
