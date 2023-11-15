@@ -12,7 +12,8 @@
   "private": false,
   "scripts": {
     "build": "rimraf build && tsc",
-    "test": "ts-node test/index.ts",
+    "test": "cd test && ts-node index.ts",
+    "test:generator": "cd test && ts-node generate.ts",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
