@@ -2,7 +2,8 @@ import { readdirSync, statSync, writeFile, writeFileSync } from "fs";
 
 import path from "path";
 import { Locale } from "types/Locale";
-import I18nBase from "./base";
+import I18nBase from "./Base";
+import logger from "./util/logger";
 
 class I18nGenerator extends I18nBase {
   constructor() {
@@ -51,11 +52,19 @@ class I18nGenerator extends I18nBase {
     });
 
     for (const filePath of files) {
-      const file = require(filePath);
+      let file;
+      try {
+        file = await require(filePath);
+      } catch (e) {
+        logger.error(` - ${filePath.slice(this.config.files.length)} (${e}))`);
+        continue;
+      }
 
       let fileData;
       if (filePath.endsWith(".json")) fileData = file;
       else fileData = file.i18nData;
+
+      if (!fileData) continue;
 
       const name = this.getRelativeName(filePath);
       this.data[name] ??= {};
@@ -74,12 +83,19 @@ class I18nGenerator extends I18nBase {
           this.data[name][key][locale] = res;
         }
       }
+
+      logger.debug(
+        ` + ${filePath.slice(this.config.files.length + 1)} (${
+          Object.keys(fileData).length
+        })`
+      );
     }
 
     for (const dirname of dirs) await this.generateByDirectory(dirname);
   }
 
   public async generate() {
+    logger.info("Generating...");
     this.data = {};
 
     await this.generateByDirectory(this.config.files);

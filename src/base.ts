@@ -1,6 +1,7 @@
 import { Config } from "types/Config";
 import path from "path";
 import { validatePath } from "./util/validatePath";
+import logger from "./util/logger";
 
 class I18nBase {
   protected config: Config;
@@ -9,7 +10,15 @@ class I18nBase {
   protected cache: Record<string, Record<string, Record<string, string>>>;
 
   constructor(validatePaths?: boolean) {
-    this.config = require(path.resolve("i18n.config.js"));
+    logger.info("Loading config...");
+    try {
+      this.config = require(path.join(process.cwd(), "i18n.config.js"));
+    } catch (e) {
+      logger.error(
+        "Failed to load config (i18n.config.js). Please run `i18n init` to create a config file."
+      );
+      process.exit(1);
+    }
 
     this.config.cache_path ??= path.resolve("cache/i18n.json");
     this.config.data_path ??= path.resolve(
@@ -32,6 +41,18 @@ class I18nBase {
 
     this.cache = require(this.config.cache_path);
     this.data = require(this.config.data_path);
+
+    this.cache[this.config.strategy.id] ??= {};
+
+    logger.info(`Strategy: ${this.config.strategy.id}`);
+    logger.info(`Locales: ${this.config.locales.join(", ")}`);
+    logger.info(`Default locale: ${this.config.defaultLocale}`);
+    logger.info(`Paths:`);
+    logger.info(`  - Files: ${this.config.files}`);
+    logger.info(`  - Data: ${this.config.data_path}`);
+    logger.info(`  - Cache: ${this.config.cache_path}`);
+    logger.info("Config loaded");
+    console.log();
   }
 }
 
