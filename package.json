@@ -1,6 +1,6 @@
 {
   "name": "@drawilet/i18n",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Effortlessly internationalize your app with our npm i18n package. Easily manage translations for diverse audiences, ensuring a user-friendly, global experience.",
   "main": "dist/index.js",
   "bin": {
@@ -15,7 +15,9 @@
   "private": false,
   "exports": {
     ".": "./dist/index.js",
-    "./strategies/*": "./dist/strategies/*.js"
+    "./strategies/*": "./dist/strategies/*.js",
+    "./Client": "./dist/Client.js",
+    "./Generator": "./dist/Generator.js"
   },
   "scripts": {
     "build": "rimraf dist && tsc",
