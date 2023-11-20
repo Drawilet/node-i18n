@@ -1,6 +1,6 @@
 {
   "name": "@drawilet/i18n",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "description": "Effortlessly internationalize your app with our npm i18n package. Easily manage translations for diverse audiences, ensuring a user-friendly, global experience.",
   "main": "dist/index.js",
   "bin": {
@@ -22,9 +22,10 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "build:strategies": "tsc -p tsconfig.strategies.json",
-    "test": "tsx test/index.ts",
+    "test": "yarn test:cli generate && yarn test:client",
+    "test:client": "tsx test/index.ts",
     "test:cli": "tsx cli/index.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "yarn build && yarn test"
   },
   "dependencies": {
     "@vitalets/google-translate-api": "^9.2.0",
@@ -40,8 +41,6 @@
     "@typescript-eslint/parser": "^6.10.0",
     "eslint": "^8.53.0",
     "rimraf": "^5.0.5",
-    "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
   },
   "bugs": {
