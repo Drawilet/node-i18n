@@ -7,7 +7,7 @@ class I18nClient extends I18nBase {
   public load() {
     logger.info("Loading data...");
     try {
-      this.data = require(this.config.data_path);
+      this.data = require(this.config.output_path);
       logger.info("Data loaded");
     } catch (e) {
       logger.error(
