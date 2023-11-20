@@ -4,7 +4,7 @@ module.exports = {
   strategy: new GoogleStrategy(),
   locales: ["es", "en"],
   defaultLocale: "en",
-  files: __dirname + "/src/routes",
-  data_path: __dirname + "/src/i18n/routes.json",
+  input_path: __dirname + "/src/routes",
+  output_path: __dirname + "/src/locales/routes.json",
   cache_path: __dirname + "/cache/i18n.json",
 };

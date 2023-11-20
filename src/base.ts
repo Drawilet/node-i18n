@@ -1,6 +1,5 @@
 import { Config } from "types/Config";
 import path from "path";
-import { validatePath } from "./util/validatePath";
 import logger from "./util/logger";
 
 class I18nBase {
@@ -9,7 +8,7 @@ class I18nBase {
   protected data: Record<string, Record<string, Record<string, string>>>;
   protected cache: Record<string, Record<string, Record<string, string>>>;
 
-  constructor(validatePaths?: boolean) {
+  constructor(pre?: (config: Config) => void) {
     logger.info("Loading config...");
     try {
       this.config = require(path.join(process.cwd(), "i18n.config.js"));
@@ -17,30 +16,28 @@ class I18nBase {
       logger.error(
         "Failed to load config (i18n.config.js). Please run `i18n init` to create a config file."
       );
-      process.exit(1);
+
+      throw e;
     }
 
     this.config.cache_path ??= path.resolve("cache/i18n.json");
-    this.config.data_path ??= path.resolve(
-      `src/i18n/${path.basename(this.config.files)}.json`
+    this.config.output_path ??= path.resolve(
+      `src/i18n/${path.basename(this.config.input_path)}.json`
     );
 
     if (!this.config.cache_path.endsWith(".json"))
       throw new Error("cache_path must be a json file");
-    if (!this.config.data_path.endsWith(".json"))
-      throw new Error("data_path must be a json file");
+    if (!this.config.output_path.endsWith(".json"))
+      throw new Error("output_path must be a json file");
 
-    this.config.data_path = path.join(this.config.data_path);
+    this.config.output_path = path.join(this.config.output_path);
     this.config.cache_path = path.join(this.config.cache_path);
-    this.config.files = path.join(this.config.files);
+    this.config.input_path = path.join(this.config.input_path);
 
-    if (validatePaths) {
-      validatePath(this.config.cache_path, JSON.stringify({}));
-      validatePath(this.config.data_path, JSON.stringify({}));
-    }
+    if (pre) pre(this.config);
 
     this.cache = require(this.config.cache_path);
-    this.data = require(this.config.data_path);
+    this.data = require(this.config.output_path);
 
     this.cache[this.config.strategy.id] ??= {};
 
@@ -48,8 +45,8 @@ class I18nBase {
     logger.info(`Locales: ${this.config.locales.join(", ")}`);
     logger.info(`Default locale: ${this.config.defaultLocale}`);
     logger.info(`Paths:`);
-    logger.info(`  - Files: ${this.config.files}`);
-    logger.info(`  - Data: ${this.config.data_path}`);
+    logger.info(`  - Files: ${this.config.input_path}`);
+    logger.info(`  - Data: ${this.config.output_path}`);
     logger.info(`  - Cache: ${this.config.cache_path}`);
     logger.info("Config loaded");
     console.log();

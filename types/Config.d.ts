@@ -4,7 +4,7 @@ export interface Config {
   strategy: Strategy;
   locales: Locale[];
   defaultLocale: Locale;
-  files: string;
   cache_path: string;
-  data_path: string;
+  input_path: string;
+  output_path: string;
 }
