@@ -2,8 +2,6 @@ name: Release & Publish
 
 on:
   push:
-    branches:
-      - main
 
 jobs:
   publish:
@@ -16,8 +14,8 @@ jobs:
           node-version: "14.x"
           registry-url: "https://registry.npmjs.org"
       - name: Install modules
-        run: npm install
+        run: yarn
       - name: Publish to npm
-        run: npm publish --access public
+        run: yarn publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
