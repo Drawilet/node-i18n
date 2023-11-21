@@ -2,7 +2,7 @@
 import { program } from "commander";
 import data from "../package.json";
 
-import I18nGenerator from "../src/Generator";
+import I18nGenerator from "../src/lib/generator";
 import { copyFile } from "fs";
 import path from "path";
 import logger from "../src/util/logger";
@@ -32,7 +32,7 @@ program
       copyFile(
         path.join(__dirname, "defaultConfig.js"),
         path.join(process.cwd(), "./i18n.config.js"),
-        (e) => {
+        (e: any) => {
           if (e) logger.error(e);
           else logger.info("Initialized i18n.config.js");
         }
