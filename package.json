@@ -24,8 +24,7 @@
     "build:strategies": "tsc -p tsconfig.strategies.json",
     "test": "yarn test:cli generate && yarn test:client",
     "test:client": "tsx test/index.ts",
-    "test:cli": "tsx cli/index.ts",
-    "prepublishOnly": "yarn build && yarn test"
+    "test:cli": "tsx cli/index.ts"
   },
   "dependencies": {
     "@vitalets/google-translate-api": "^9.2.0",
