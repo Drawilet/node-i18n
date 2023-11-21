@@ -25,7 +25,7 @@ As a first step, you must choose a translation strategy.
 1. Execute the following command to create the configuration file.
 
    ```bash
-   npx i18 init
+   npx i18n init
    ```
 
    This should generate a configuration file i18n.config.js similar to this:
@@ -56,6 +56,8 @@ As a first step, you must choose a translation strategy.
 3. Run `npx i18n generate` to generate the files.
 
 4. Use the i18n client to get the translations.
+    > ## Pro tip
+   > Use our [clients](#clients) for a native-like experience. :star2:
 
    ```ts
    import I18nClient from "@drawilet/i18n/Client";
@@ -72,9 +74,7 @@ As a first step, you must choose a translation strategy.
    i18n.get("description");
    ```
 
-> ## Pro tip
->
-> Use our [submodules](#sub-modules) for a native-like experience. :star2:
+
 
 ---
 <br>
@@ -84,11 +84,13 @@ As a first step, you must choose a translation strategy.
 ### Google
 
 ```js
-new GoogleStrategy("proxy_url"),
+new GoogleStrategy("proxy_url")
 ```
 
 - `proxy_url (optional)`: It is the proxy that will be used to avoid rate limits.<br> You can obtain one [here](https://free-proxy-list.net/) . <br>**WARNING**: Use this only for personal projects.
 
-## Sub modules
-
-> Coming soon...
+## Clients
+- [nextjs-i18n](https://www.npmjs.com/package/@drawilet/nextjs-i18n) - 
+A client for [Next.js](https://www.npmjs.com/package/next)
+  
+> More clients are being created.
