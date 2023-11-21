@@ -1,6 +1,6 @@
 {
   "name": "@drawilet/i18n",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Effortlessly internationalize your app with our npm i18n package. Easily manage translations for diverse audiences, ensuring a user-friendly, global experience.",
   "main": "dist/index.js",
   "bin": {
