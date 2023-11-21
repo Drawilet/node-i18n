@@ -2,6 +2,10 @@ name: Release & Publish
 
 on:
   push:
+    branches:
+      - master
+    tags:
+      - "v*"
 
 jobs:
   publish:
