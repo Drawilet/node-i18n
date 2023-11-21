@@ -16,8 +16,8 @@
   "exports": {
     ".": "./dist/index.js",
     "./strategies/*": "./dist/strategies/*.js",
-    "./Client": "./dist/Client.js",
-    "./Generator": "./dist/Generator.js"
+    "./Client": "./dist/lib/client.js",
+    "./Generator": "./dist/lib/generator.js"
   },
   "scripts": {
     "build": "rimraf dist && tsc",

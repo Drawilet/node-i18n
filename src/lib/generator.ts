@@ -2,9 +2,9 @@ import { readdirSync, statSync, writeFile, writeFileSync } from "fs";
 
 import path from "path";
 import { Locale } from "types/Locale";
-import I18nBase from "./Base";
-import logger from "./util/logger";
-import validatePath from "./util/validatePath";
+import I18nBase from "./base";
+import logger from "../util/logger";
+import validatePath from "../util/validatePath";
 
 class I18nGenerator extends I18nBase {
   constructor() {
