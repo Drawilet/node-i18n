@@ -22,10 +22,10 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "build:strategies": "tsc -p tsconfig.strategies.json",
-    "test": "yarn test:cli generate && yarn test:client",
+    "test": "npm run test:cli generate && npm run test:client",
     "test:client": "tsx test/index.ts",
     "test:cli": "tsx cli/index.ts",
-    "prepublishOnly": "yarn build && yarn test"
+    "prepublishOnly": "npm run build && npm run test"
   },
   "dependencies": {
     "@vitalets/google-translate-api": "^9.2.0",
