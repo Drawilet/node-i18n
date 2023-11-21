@@ -1,6 +1,6 @@
 import { i18nData } from "../../../types/Data";
 
-const i18nData = {
+export const _i18n: i18nData = {
   _context: "Customers area",
   address: "Address",
 
@@ -18,5 +18,3 @@ const i18nData = {
   create: "Add",
   update: "Update",
 };
-
-export { i18nData };

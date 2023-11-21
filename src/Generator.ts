@@ -4,10 +4,14 @@ import path from "path";
 import { Locale } from "types/Locale";
 import I18nBase from "./Base";
 import logger from "./util/logger";
+import validatePath from "./util/validatePath";
 
 class I18nGenerator extends I18nBase {
   constructor() {
-    super(true);
+    super((config) => {
+      validatePath(config.cache_path, JSON.stringify({}));
+      validatePath(config.output_path, JSON.stringify({}));
+    });
   }
 
   private saveCache() {
@@ -33,7 +37,7 @@ class I18nGenerator extends I18nBase {
   }
 
   private getRelativeName(dir: string) {
-    let name = dir.slice(this.config.files.length);
+    let name = dir.slice(this.config.input_path.length);
     name = name.replace(/\\/g, "/");
     name = name.replace(/index/g, "");
     name = name.split(".")[0];
@@ -56,13 +60,15 @@ class I18nGenerator extends I18nBase {
       try {
         file = await require(filePath);
       } catch (e) {
-        logger.error(` - ${filePath.slice(this.config.files.length)} (${e}))`);
+        logger.error(
+          ` - ${filePath.slice(this.config.input_path.length)} (${e}))`
+        );
         continue;
       }
 
       let fileData;
       if (filePath.endsWith(".json")) fileData = file;
-      else fileData = file.i18nData;
+      else fileData = file._i18n;
 
       if (!fileData) continue;
 
@@ -85,7 +91,7 @@ class I18nGenerator extends I18nBase {
       }
 
       logger.debug(
-        ` + ${filePath.slice(this.config.files.length + 1)} (${
+        ` + ${filePath.slice(this.config.input_path.length + 1)} (${
           Object.keys(fileData).length
         })`
       );
@@ -98,9 +104,9 @@ class I18nGenerator extends I18nBase {
     logger.info("Generating...");
     this.data = {};
 
-    await this.generateByDirectory(this.config.files);
+    await this.generateByDirectory(this.config.input_path);
 
-    writeFileSync(this.config.data_path, JSON.stringify(this.data));
+    writeFileSync(this.config.output_path, JSON.stringify(this.data));
     this.saveCache();
   }
 }

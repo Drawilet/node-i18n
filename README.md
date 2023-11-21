@@ -1,78 +1,96 @@
 # :globe_with_meridians: node-i18n
 
-About
-Effortlessly internationalize your app with our npm i18n package. Easily manage translations for diverse audiences, ensuring a user-friendly, global experience."
+Effortlessly internationalize your app with our npm i18n package. Easily manage translations for diverse audiences, ensuring a user-friendly, global experience.
 
 ## Installation
 
-You can install the package via npm:
-
 ```bash
+# npm
 npm install @drawilet/i18n
+
+# yarn
+yarn add @drawilet/i18n
 ```
 
-## Usage
+## Getting started
 
-### Initialize
+As a first step, you must choose a translation strategy.
 
-To use the package, you need to initialize the `I18n` class. Here's an example of how you might set it up:
+### Avaiable [strategies](#strategies)
 
-```javascript
-import I18n from "@drawilet/i18n";
+| Name              | api key | limits             | Proxy agent |
+| ----------------- | ------- | ------------------ | ----------- |
+| [Google](#google) | ❌      | :heavy_check_mark: | ✅          |
 
-// Initialize the i18n instance
-const i18n = new I18n(strategy, {
-  locales: [/* Array of supported locales */],
-  defaultLocale: /* Default locale */,
-  files: /* Path to files (routes, pages, views) */,
-  cache_path: /* Path to cache*/,
-  data_path: /* Path to data (auto-generated)*/
-});
+1. Execute the following command to create the configuration file.
+
+   ```bash
+   npx i18n init
+   ```
+
+   This should generate a configuration file i18n.config.js similar to this:
+
+   ```js
+   const GoogleStrategy = require("@drawilet/i18n/strategies/google").default;
+
+   module.exports = {
+     strategy: new GoogleStrategy(),
+     locales: ["es", "en"],
+     defaultLocale: "en",
+     input_path: __dirname + "/src/routes",
+     output_path: __dirname + "/src/locales/routes.json",
+     cache_path: __dirname + "/cache/i18n.json",
+   };
+   ```
+
+   Configure it according your project requirements.
+
+2. In each file (page, route) of your project, you should export `_i18n` in this way:
+
+   ```ts
+   export const _i18n = {
+     key: "value",
+   };
+   ```
+
+3. Run `npx i18n generate` to generate the files.
+
+4. Use the i18n client to get the translations.
+    > ## Pro tip
+   > Use our [clients](#clients) for a native-like experience. :star2:
+
+   ```ts
+   import I18nClient from "@drawilet/i18n/Client";
+   const I18N = new I18nClient();
+
+   // You can get the translatiions using the "get" method
+   I18N.get("locale", "path", "key");
+
+   // or creating a subclient (ideal for pages or routes)
+   const i18n = I18N.createClient("locale", "path");
+
+   // and use it infite times
+   i18n.get("title");
+   i18n.get("description");
+   ```
+
+
+
+---
+<br>
+
+## Strategies
+
+### Google
+
+```js
+new GoogleStrategy("proxy_url")
 ```
 
-### Strategies
+- `proxy_url (optional)`: It is the proxy that will be used to avoid rate limits.<br> You can obtain one [here](https://free-proxy-list.net/) . <br>**WARNING**: Use this only for personal projects.
 
-| Name   | api key | limits             | Proxy agent |
-| ------ | ------- | ------------------ | ----------- |
-| Google | ❌      | :heavy_check_mark: | ✅          |
-
-### Methods
-
-#### `translate`
-
-This method translates text from one locale to another.
-
-#### `generate`
-
-Generates i18n data from the specified directory.
-
-#### `load`
-
-Loads the generated i18n data.
-
-#### `get`
-
-Retrieves the translated content for a specific locale, pathname, and key.
-
-#### `createClient`
-
-Creates a client to access translations based on a locale and pathname.
-
-## Code Example
-
-```javascript
-const i18n = new I18n(new GoogleStrategy("http://212.107.31.118:80"), {
-  locales: ["es", "en"],
-  defaultLocale: "en",
-  files: __dirname + "/routes",
-});
-
-(async () => {
-  await i18n.generate();
-  await i18n.load();
-
-  const client = i18n.createClient("es", "/customers/");
-
-  console.log(client.get("title"));
-})();
-```
+## Clients
+- [nextjs-i18n](https://www.npmjs.com/package/@drawilet/nextjs-i18n) - 
+A client for [Next.js](https://www.npmjs.com/package/next)
+  
+> More clients are being created.
