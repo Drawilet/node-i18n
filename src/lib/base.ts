@@ -1,6 +1,6 @@
 import { Config } from "types/Config";
 import path from "path";
-import logger from "./util/logger";
+import logger from "../util/logger";
 
 class I18nBase {
   protected config: Config;

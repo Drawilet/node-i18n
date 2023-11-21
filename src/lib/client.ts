@@ -1,7 +1,7 @@
 import { Locale } from "types/Locale";
 
-import I18nBase from "./Base";
-import logger from "./util/logger";
+import I18nBase from "./base";
+import logger from "../util/logger";
 
 class I18nClient extends I18nBase {
   public load() {
