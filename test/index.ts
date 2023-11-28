@@ -10,7 +10,10 @@ const i18n = new I18n();
 
   /*<──  ───────    PAGES   ───────  ──>*/
   const i18nPages = i18n.Instance();
-  const customersPageI18n = i18nPages.Controller("en", "customers");
 
+  const customersPageI18n = i18nPages.Controller("en", "customers");
   console.log(customersPageI18n.get("title"));
+
+  const homePageI18n = i18nPages.Controller("en", "/");
+  console.log(homePageI18n.get("title"));
 })();

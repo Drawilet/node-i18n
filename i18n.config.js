@@ -9,7 +9,7 @@ module.exports = {
   output_path: __dirname + "/test/locales/",
   cache_path: __dirname + "/test/cache/i18n.json",
 
-  output_mode: "separated",
+  output_mode: "merged",
 
   inputs: [__dirname + "/test/routes", __dirname + "/test/components"],
 };
