@@ -2,9 +2,15 @@ import I18n from "../src/";
 const i18n = new I18n();
 
 (async () => {
-  await i18n.load();
+  /*<──  ───────    COMPONENTS   ───────  ──>*/
+  const i18nComponents = i18n.Instance("components");
+  const appComponentI18n = i18nComponents.Controller("en", "app");
 
-  const client = i18n.createClient("es", "/customers/");
+  console.log(appComponentI18n.get("label"));
 
-  console.log(client.get("title"));
+  /*<──  ───────    PAGES   ───────  ──>*/
+  const i18nPages = i18n.Instance();
+  const customersPageI18n = i18nPages.Controller("en", "customers");
+
+  console.log(customersPageI18n.get("title"));
 })();

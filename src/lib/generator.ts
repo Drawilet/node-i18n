@@ -1,10 +1,11 @@
-import { readdirSync, statSync, writeFile, writeFileSync } from "fs";
+import { mkdirSync, readdirSync, statSync, writeFile, writeFileSync } from "fs";
 
 import path from "path";
 import { Locale } from "types/Locale";
 import I18nBase from "./base";
 import logger from "../util/logger";
 import validatePath from "../util/validatePath";
+import { rimraf } from "rimraf";
 
 class I18nGenerator extends I18nBase {
   constructor() {
@@ -36,16 +37,18 @@ class I18nGenerator extends I18nBase {
     return res;
   }
 
-  private getRelativeName(dir: string) {
-    let name = dir.slice(this.config.input_path.length);
+  private getRelativeName(input: string, dir: string) {
+    let name = dir.slice(this.config.inputs[input].length);
     name = name.replace(/\\/g, "/");
     name = name.replace(/index/g, "");
     name = name.split(".")[0];
 
+    if (name.endsWith("/")) name = name.slice(0, -1);
+
     return name;
   }
 
-  private async generateByDirectory(dir: string) {
+  private async generateByDirectory(input: string, dir: string) {
     const files: string[] = [];
     const dirs: string[] = [];
 
@@ -61,7 +64,7 @@ class I18nGenerator extends I18nBase {
         file = await require(filePath);
       } catch (e) {
         logger.error(
-          ` - ${filePath.slice(this.config.input_path.length)} (${e}))`
+          ` - ${filePath.slice(this.config.inputs[input].length)} (${e}))`
         );
         continue;
       }
@@ -72,42 +75,67 @@ class I18nGenerator extends I18nBase {
 
       if (!fileData) continue;
 
-      const name = this.getRelativeName(filePath);
-      this.data[name] ??= {};
+      const pathame = this.getRelativeName(input, filePath);
+      this.data[input][pathame] ??= {};
 
-      for (const key in fileData) {
-        if (key == "_context") continue;
+      for (const locale of this.config.locales) {
+        this.data[input][pathame][locale] ??= {};
 
-        this.data[name][key] ??= {};
-        for (const locale of this.config.locales) {
+        for (const key in fileData) {
+          if (key == "_context") continue;
+
           const text = fileData[key];
           const res = await this.translate(text, {
             from: this.config.defaultLocale,
             to: locale,
             context: fileData._context,
           });
-          this.data[name][key][locale] = res;
+          this.data[input][pathame][locale][key] = res;
         }
       }
 
       logger.debug(
-        ` + ${filePath.slice(this.config.input_path.length + 1)} (${
+        ` + ${filePath.slice(this.config.inputs[input].length + 1)} (${
           Object.keys(fileData).length
         })`
       );
     }
 
-    for (const dirname of dirs) await this.generateByDirectory(dirname);
+    for (const dirname of dirs) await this.generateByDirectory(input, dirname);
   }
 
   public async generate() {
     logger.info("Generating...");
     this.data = {};
+    await rimraf(this.config.output_path);
+    mkdirSync(this.config.output_path, { recursive: true });
 
-    await this.generateByDirectory(this.config.input_path);
+    for (const input in this.config.inputs) {
+      logger.debug(`> ${input}`);
+      this.data[input] ??= {};
+      const dir = this.config.inputs[input];
+      await this.generateByDirectory(input, dir);
+    }
 
-    writeFileSync(this.config.output_path, JSON.stringify(this.data));
     this.saveCache();
+
+    switch (this.config.output_mode) {
+      case "merged":
+        writeFileSync(
+          path.join(this.config.output_path, this.outputFilename),
+          JSON.stringify(this.data)
+        );
+        break;
+
+      case "separated":
+        for (const input in this.data) {
+          const dir = path.join(this.config.output_path, `${input}.json`);
+          writeFileSync(dir, JSON.stringify(this.data[input]));
+        }
+        break;
+      default:
+        break;
+    }
   }
 }
 
