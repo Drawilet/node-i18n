@@ -4,7 +4,11 @@ module.exports = {
   strategy: new GoogleStrategy(),
   locales: ["es", "en"],
   defaultLocale: "en",
-  input_path: __dirname + "/src/routes",
-  output_path: __dirname + "/src/locales/routes.json",
+
+  output_path: __dirname + "/src/locales/",
   cache_path: __dirname + "/cache/i18n.json",
+
+  output_mode: "separated",
+
+  inputs: [__dirname + "/src/routes"],
 };

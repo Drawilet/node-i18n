@@ -1,17 +1,27 @@
 import { Config } from "types/Config";
 import path from "path";
 import logger from "../util/logger";
+import I18nConfig from "types/I18nConfig";
 
 class I18nBase {
-  protected config: Config;
+  public config: Config;
 
-  protected data: Record<string, Record<string, Record<string, string>>>;
-  protected cache: Record<string, Record<string, Record<string, string>>>;
+  public data: Record<
+    string,
+    Record<string, Record<string, Record<string, string>>>
+  >;
+
+  public cache: Record<string, Record<string, Record<string, string>>>;
+
+  public defaultInput: string;
+  public outputFilename = "data.json";
 
   constructor(pre?: (config: Config) => void) {
     logger.info("Loading config...");
+    let config: I18nConfig;
+
     try {
-      this.config = require(path.join(process.cwd(), "i18n.config.js"));
+      config = require(path.join(process.cwd(), "i18n.config.js"));
     } catch (e) {
       logger.error(
         "Failed to load config (i18n.config.js). Please run `i18n init` to create a config file."
@@ -20,36 +30,51 @@ class I18nBase {
       throw e;
     }
 
-    this.config.cache_path ??= path.resolve("cache/i18n.json");
-    this.config.output_path ??= path.resolve(
-      `src/i18n/${path.basename(this.config.input_path)}.json`
-    );
-
-    if (!this.config.cache_path.endsWith(".json"))
+    if (!config.cache_path.endsWith(".json"))
       throw new Error("cache_path must be a json file");
-    if (!this.config.output_path.endsWith(".json"))
-      throw new Error("output_path must be a json file");
 
-    this.config.output_path = path.join(this.config.output_path);
-    this.config.cache_path = path.join(this.config.cache_path);
-    this.config.input_path = path.join(this.config.input_path);
+    config.output_path = path.join(config.output_path);
+    config.cache_path = path.join(config.cache_path);
 
-    if (pre) pre(this.config);
+    const inputs: Record<string, string> = {};
+    if (Array.isArray(config.inputs))
+      config.inputs.forEach(
+        (
+          input:
+            | string
+            | {
+                id: string;
+                dir: string;
+              }
+        ) => {
+          if (typeof input != "object")
+            input = { id: path.basename(input), dir: input };
 
-    this.cache = require(this.config.cache_path);
-    this.data = require(this.config.output_path);
+          inputs[input.id] = path.join(input.dir);
+        }
+      );
+    if (pre) pre(config);
 
-    this.cache[this.config.strategy.id] ??= {};
+    this.defaultInput = Object.keys(inputs)[0];
 
-    logger.info(`Strategy: ${this.config.strategy.id}`);
-    logger.info(`Locales: ${this.config.locales.join(", ")}`);
-    logger.info(`Default locale: ${this.config.defaultLocale}`);
+    this.cache = require(config.cache_path);
+    //this.data = require(config.output_path);
+    this.data = {};
+
+    this.cache[config.strategy.id] ??= {};
+
+    logger.info(`Strategy: ${config.strategy.id}`);
+    logger.info(`Locales: ${config.locales.join(", ")}`);
+    logger.info(`Default locale: ${config.defaultLocale}`);
     logger.info(`Paths:`);
-    logger.info(`  - Files: ${this.config.input_path}`);
-    logger.info(`  - Data: ${this.config.output_path}`);
-    logger.info(`  - Cache: ${this.config.cache_path}`);
+    logger.info(`  - Files: ${config.inputs}`);
+    logger.info(`  - Data: ${config.output_path}`);
+    logger.info(`  - Cache: ${config.cache_path}`);
     logger.info("Config loaded");
     console.log();
+
+    this.config = config;
+    if (Object.keys(inputs).length > 0) this.config.inputs = inputs;
   }
 }
 
