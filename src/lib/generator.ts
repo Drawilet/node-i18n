@@ -43,7 +43,9 @@ class I18nGenerator extends I18nBase {
     name = name.replace(/index/g, "");
     name = name.split(".")[0];
 
+    if (!name.startsWith("/")) name = `/${name}`;
     if (name.endsWith("/")) name = name.slice(0, -1);
+    if (name == "") name = "/";
 
     return name;
   }
@@ -64,7 +66,7 @@ class I18nGenerator extends I18nBase {
         file = await require(filePath);
       } catch (e) {
         logger.error(
-          ` - ${filePath.slice(this.config.inputs[input].length)} (${e}))`
+          ` - /${filePath.slice(this.config.inputs[input].length)} (${e}))`
         );
         continue;
       }
@@ -94,11 +96,7 @@ class I18nGenerator extends I18nBase {
         }
       }
 
-      logger.debug(
-        ` + ${filePath.slice(this.config.inputs[input].length + 1)} (${
-          Object.keys(fileData).length
-        })`
-      );
+      logger.debug(` + ${pathame} (${Object.keys(fileData).length})`);
     }
 
     for (const dirname of dirs) await this.generateByDirectory(input, dirname);
