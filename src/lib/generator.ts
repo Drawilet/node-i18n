@@ -37,7 +37,7 @@ class I18nGenerator extends I18nBase {
     return res;
   }
 
-  private getRelativeName(input: string, dir: string) {
+  private getName(input: string, dir: string) {
     let name = dir.slice(this.config.inputs[input].length);
     name = name.replace(/\\/g, "/");
     name = name.replace(/index/g, "");
@@ -46,6 +46,8 @@ class I18nGenerator extends I18nBase {
     if (!name.startsWith("/")) name = `/${name}`;
     if (name.endsWith("/")) name = name.slice(0, -1);
     if (name == "") name = "/";
+
+    if (this.config.parser) name = this.config.parser(name);
 
     return name;
   }
@@ -77,7 +79,7 @@ class I18nGenerator extends I18nBase {
 
       if (!fileData) continue;
 
-      const pathame = this.getRelativeName(input, filePath);
+      const pathame = this.getName(input, filePath);
       this.data[input][pathame] ??= {};
 
       for (const locale of this.config.locales) {

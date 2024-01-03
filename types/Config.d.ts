@@ -10,4 +10,6 @@ export interface Config {
   output_mode: "merged" | "separated";
 
   inputs: Record<string, string>;
+
+  parser?: (route: string) => string;
 }
